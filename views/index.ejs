@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="keywords" content="ansible vault, encrypt, decrypt, encryption, decryption, ansible vault tool, ansible vault encryption / decryption tool, online ansible vault tool, ansiblevault, Ansible Vault <%= t("decrypt") %>">
+  <meta name="robots" content="index,follow">
+  <title><%= t("app_title") %> - <%= t("Home") %></title>
+  <link rel='stylesheet' href='/css/bootstrap.min.css' />
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="/"><%= t("app_title") %></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+        aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#"><%= t("Home") %> <span class="sr-only">(<%= t("currrent") %>)</span></a>
+          </li>
+        </ul>
+        <div class="navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <%= t("Language") %>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="languageDropdown">
+            <a class="dropdown-item" href="#" onclick="changeLanguage('en')">English</a>
+            <a class="dropdown-item" href="#" onclick="changeLanguage('fr')">Français</a>
+            <a class="dropdown-item" href="#" onclick="changeLanguage('es')">Español</a>
+            <a class="dropdown-item" href="#" onclick="changeLanguage('zh')">中文(简体)</a>
+            <a class="dropdown-item" href="#" onclick="changeLanguage('hi')">हिन्दी</a>
+            <a class="dropdown-item" href="#" onclick="changeLanguage('ar')">العربية</a>
+            <a class="dropdown-item" href="#" onclick="changeLanguage('bn')">বাংলা</a>
+            <a class="dropdown-item" href="#" onclick="changeLanguage('ru')">Русский</a>
+            <a class="dropdown-item" href="#" onclick="changeLanguage('pt')">Português</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <div class="custom-control custom-switch my-2">
+            <input type="checkbox" class="custom-control-input" id="dark-mode-toggle">
+            <label class="custom-control-label" for="dark-mode-toggle"><%= t("Dark Mode") %></label>
+          </div>
+        </li>
+      </div>
+    </div>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="card text-white bg-primary mt-4">
+      <div class="card-header">Ansible Vault <strong><%= t("encryption") %> / <%= t("decryption") %></strong></div>
+      <div class="card-body">
+        <form>
+          <div class="form-group">
+            <label for="passphrase"><%= t("passphrase") %></label>
+            <input type="password" class="form-control" id="passphrase" placeholder="Enter your password...">
+          </div>
+          <div class="form-group">
+            <label for="content"><%= t("content") %> <%= t("to") %> <%= t("encrypt") %> / <%= t("decrypt") %></label>
+            <ul class="nav nav-tabs">
+              <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#content_text_tab"><%= t("Text") %></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#content_file_tab"><%= t("File") %></a>
+              </li>
+            </ul>
+            <div class="tab-content mt-1">
+              <div class="tab-pane fade active show" id="content_text_tab">
+                <textarea required class="form-control" id="content_text" rows="7"
+                  placeholder="Enter your text for encryption or decryption..."></textarea>
+              </div>
+              <div class="tab-pane fade" id="content_file_tab">
+                <input type="file" class="form-control-file" id="content_file" aria-describedby="fileHelp">
+                <small id="fileHelp" class="form-text text-muted"><%= t("Upload the file you want to encrypt/decrypt") %>.</small>
+              </div>
+            </div>
+          </div>
+          <div class="btn-group encrypt_decrypt_buttons" role="group">
+            <button type="button" data-action="encrypt" class="btn btn-primary btn-lg btn_encrypt_decrypt"><%= t("encrypt") %></button>
+            <button type="button" data-action="decrypt" class="btn btn-primary btn-lg btn_encrypt_decrypt"><%= t("decrypt") %></button>
+          </div>
+          <div class="progress" style="display: none;" id="loading">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card text-white bg-primary mt-4" id="response_holder" style="display:none">
+      <div class="card-header"><%= t("Result") %><button onclick="document.getElementById('response_holder').style.display='none';"type="button" class="close float-right btn btn-sm" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+      <div class="card-body">
+        <h4 class="card-title response_msg"></h4>
+        <div class="btn-group export_buttons" role="group">
+          <button class="btn btn-primary" id="btn_copy"><%= t("Copy to clipboard") %></button>
+          <button class="btn btn-primary" id="btn_download"><%= t("Download as file") %></button>
+        </div>
+        <textarea class="form-control response_text mt-2" rows="15"></textarea>
+      </div>
+    </div>
+
+    <div class="jumbotron mt-5">
+      <h1 class="display-4"><%= t("Welcome") %>,</h1>
+      <p class="lead"><a href="https://docs.ansible.com/ansible/latest/cli/ansible-vault.html" target="_blank">Ansible Vault</a> <%= t("encryption/decryption tool")%>. <%= t("You may encrypt or decrypt any information using online interface or api tools provided")%>.</p>
+      <hr class="my-4">
+      <p><strong><%= t("Important") %></strong> : <%= t("We do not use, store or log the data you encrypt or decrypt") %>.</p>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card bg-dark">
+          <div class="card-header">API (<%= t("encrypt") %>)</div>
+          <div class="card-body">
+            <h4 class="card-title"><%= host %>/api</h4>
+            <strong>POST Data:</strong><br/>
+            <code>
+              {<br/>
+                &nbsp;&nbsp;"action": "encrypt",<br/>
+                &nbsp;&nbsp;"content": "information to be encrypted by ansible vault",<br/>
+                &nbsp;&nbsp;"passphrase": "test"<br/>
+              }<br/>
+            </code>
+            <br/>
+            <strong>Response Data:</strong>
+            <code>
+              <br/>{
+                <br/>&nbsp;&nbsp;"result": "$ANSIBLE_VAULT;1.1;AES256\n32393430393531343931666361643831656232336361346331663439376662353735646230316631\n3165663238306636336463393631636633313537343635320a656164653836353933373866616339\n37376561663666323738383839316562313632346365613962323562633538323630653735613264\n6432343766326532650a376538623831356330383265313034326630343434343635343061613730\n36636239646162643762653135636632363762313763383766303061363630333165656430633662\n6635353763666130396339363732643062326336336336623036",
+                <br/>&nbsp;&nbsp;"status": "success",
+                <br/>&nbsp;&nbsp;"msg": "Your data was successfully encrypted!"
+              <br/>}
+            </code>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card bg-dark">
+          <div class="card-header">API (<%= t("decrypt") %>)</div>
+          <div class="card-body">
+            <h4 class="card-title"><%= host %>/api</h4>
+            <strong>Post Data:</strong>
+            <code>
+              <br/>{
+                <br/>&nbsp;&nbsp;"action": "decrypt",
+                <br/>&nbsp;&nbsp;"content": "$ANSIBLE_VAULT;1.1;AES256\n32393430393531343931666361643831656232336361346331663439376662353735646230316631\n3165663238306636336463393631636633313537343635320a656164653836353933373866616339\n37376561663666323738383839316562313632346365613962323562633538323630653735613264\n6432343766326532650a376538623831356330383265313034326630343434343635343061613730\n36636239646162643762653135636632363762313763383766303061363630333165656430633662\n6635353763666130396339363732643062326336336336623036",
+                <br/>&nbsp;&nbsp;"passphrase": "test"
+              <br/>}
+            </code>
+            <br/><br/>
+            <strong>Response Data:</strong>
+            <code>
+              <br/>{
+                <br/>&nbsp;&nbsp;"result": "information to be encrypted by ansible vault",
+                <br/>&nbsp;&nbsp;"status": "success",
+                <br/>&nbsp;&nbsp;"msg": "Your data was successfully decrypted!"
+              <br/>}
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer mt-5">
+    <div class="container">
+      <p>Copyright © <%= new Date().getFullYear(); %> Ansible Vault <%= t("encryption") %>/<%= t("decryption") %></p>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+  <script src='/js/download.js' crossorigin="anonymous"></script>
+  <script src='/js/main.js' crossorigin="anonymous"></script>
+
+<script nonce="<%= nonce %>">
+  // Check for saved 'darkMode' in localStorage
+  let darkMode = localStorage.getItem('darkMode'); 
+  const darkModeToggle = document.querySelector('#dark-mode-toggle');
+
+  // Function to load a CSS file
+  function loadCSS(filename){
+    var file = document.createElement("link");
+    file.setAttribute("rel", "stylesheet");
+    file.setAttribute("type", "text/css");
+    file.setAttribute("href", filename);
+    return file;
+  }
+
+  // Function to remove a CSS file
+  function unloadCSS(file){
+    const existingLink = document.querySelector(`link[href="${file.getAttribute("href")}"]`);
+    if(existingLink){
+      existingLink.parentNode.removeChild(existingLink);
+    }
+  }
+
+  const darkCSS = loadCSS('/css/dark.min.css');
+  const lightCSS = loadCSS('/css/bootstrap.min.css');
+
+  // Function to enable dark mode
+  const enableDarkMode = () => {
+    unloadCSS(lightCSS);
+    document.head.append(darkCSS);
+    localStorage.setItem('darkMode', 'enabled');
+  }
+
+  // Function to disable dark mode
+  const disableDarkMode = () => {
+    unloadCSS(darkCSS);
+    document.head.append(lightCSS);
+    localStorage.setItem('darkMode', null);
+  }
+
+  // If the user already visited and enabled darkMode
+  // start things off with it on
+  if (darkMode === 'enabled') {
+    enableDarkMode();
+    darkModeToggle.checked = true; // Ensure the toggle is in the right state
+  } else {
+    disableDarkMode();
+  }
+
+  // When someone clicks the button
+  darkModeToggle.addEventListener('click', () => {
+    darkMode = localStorage.getItem('darkMode'); 
+    
+    // if it not current enabled, enable it
+    if (darkMode !== 'enabled') {
+      enableDarkMode();
+    // if it has been enabled, turn it off  
+    } else {  
+      disableDarkMode(); 
+    }
+  });
+
+  // Language selector event listener
+  const languageSelector = document.getElementById('languageDropdown');
+
+  // Function to change the language
+  function changeLanguage(lang) {
+    window.location.search = 'lng=' + lang;
+    localStorage.setItem('selectedLanguage', lang);
+  }
+
+  // Set the event listener for the language selector
+  languageSelector.addEventListener('change', function(event) {
+    changeLanguage(event.target.value);
+  });
+
+  // Function to set the language selector on page load
+  function setLanguageOnLoad() {
+    const selectedLanguage = localStorage.getItem('selectedLanguage');
+    if (selectedLanguage) {
+      languageSelector.value = selectedLanguage;
+    }
+  }
+
+  // Call setLanguageOnLoad on page load
+  setLanguageOnLoad();
+</script>
+</body>
+</html>
