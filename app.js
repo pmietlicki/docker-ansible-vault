@@ -43,8 +43,8 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Support json
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
 //API
 app.options('/api', cors());
