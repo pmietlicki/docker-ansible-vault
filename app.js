@@ -78,6 +78,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 app.use('/', indexRouter);
+app.options('/api', cors(corsOptions));
 app.use('/api', cors(), apiRouter);
 
 // Gestion des erreurs 404
