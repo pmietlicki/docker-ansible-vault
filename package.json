@@ -9,6 +9,7 @@
     "ansible-vault": "latest",
     "body-parser": "latest",
     "cookie-parser": "latest",
+    "cors": "latest",
     "debug": "latest",
     "ejs": "latest",
     "express": "latest",

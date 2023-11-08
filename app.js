@@ -12,6 +12,7 @@ const errorHandler = require('./middlewares/errorHandler');
 const crypto = require('crypto');
 
 const app = express();
+const cors = require('cors');
 
 app.use((req, res, next) => {
   res.locals.nonce = crypto.randomBytes(16).toString('base64');
@@ -77,7 +78,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 app.use('/', indexRouter);
-app.use('/api', apiRouter);
+app.use('/api', cors(), apiRouter);
 
 // Gestion des erreurs 404
 app.use(function(req, res, next) {
