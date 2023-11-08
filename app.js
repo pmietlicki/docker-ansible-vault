@@ -11,8 +11,6 @@ const apiRouter = require('./routes/api');
 const errorHandler = require('./middlewares/errorHandler');
 const crypto = require('crypto');
 
-const bodyParser = require('body-parser');
-
 const app = express();
 const cors = require('cors');
 
@@ -43,8 +41,6 @@ const limiter = rateLimit({
   max: 100 // limite chaque IP à 100 requêtes par fenêtre de temps
 });
 app.use(limiter);
-
-app.use(bodyParser.json()); // support json encoded bodies
 
 // Support json
 app.use(express.json());
