@@ -7,7 +7,7 @@ const supportedLanguages = ['en', 'fr', 'es', 'ar', 'bn', 'hi', 'pt', 'ru', 'zh'
 // Votre route principale
 router.get('/', function(req, res, next) {
   // Utilisez une valeur configurée pour le nom de l'hôte si possible, pour éviter les attaques Host header injection
-  const safeHost = process.env.SAFE_HOST || 'pascal-mietlicki.fr';
+  const safeHost = process.env.SAFE_HOST || 'vault.pascal-mietlicki.fr';
   res.render('index', { host: safeHost, nonce: res.locals.nonce });
 });
 

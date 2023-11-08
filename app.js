@@ -11,6 +11,8 @@ const apiRouter = require('./routes/api');
 const errorHandler = require('./middlewares/errorHandler');
 const crypto = require('crypto');
 
+const bodyParser = require('body-parser');
+
 const app = express();
 const cors = require('cors');
 
@@ -42,9 +44,15 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Support json et urlencoded avec des limites pour le corps des requêtes
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: false, limit: '10kb' }));
+app.use(bodyParser.json()); // support json encoded bodies
+
+// Support json
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+//API
+app.options('/api', cors());
+app.use('/api', cors(), apiRouter);
 
 // Initialisation de i18next pour la gestion des langues
 const i18next = require('i18next');
@@ -78,8 +86,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 app.use('/', indexRouter);
-app.options('/api', cors());
-app.use('/api', cors(), apiRouter);
+
 
 // Gestion des erreurs 404
 app.use(function(req, res, next) {
